@@ -1,6 +1,10 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
+const mysql = require("mysql2");
+const bd = require("./connection");
+
+const UserRoutes = require("./routes/users");
 
 const app = express();
 
@@ -13,13 +17,8 @@ app.use(cors(corsOptions));
 //parser les requetes de type json
 app.use(bodyParser.json());
 
-//parser les requetes de type x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use("/users", UserRoutes);
 
-//route simple en test
-app.get("/", (req, res) => {
-    res.json({ message: "Bienvenue sur l'application." });
-});
 
 //lancer le serveur 
 const PORT = process.env.PORT || 8080;
