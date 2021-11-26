@@ -1,24 +1,24 @@
 const express = require("express");
 const bodyParser = require("body-parser");
+
 const cors = require("cors");
-const mysql = require("mysql2");
-const bd = require("./connection");
+var corsOptions = {
+    origin: "http://localhost:8081"
+};
+
+const db = require("./models/connectionDb");
 
 const UserRoutes = require("./routes/users");
 
 const app = express();
 
-var corsOptions = {
-    origin: "http://localhost:8081"
-};
+//parser les requetes de type json
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use(cors(corsOptions));
 
-//parser les requetes de type json
-app.use(bodyParser.json());
-
-app.use("/users", UserRoutes);
-
+app.use("/api/users", UserRoutes);
 
 //lancer le serveur 
 const PORT = process.env.PORT || 8080;
