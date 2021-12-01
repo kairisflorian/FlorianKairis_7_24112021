@@ -2,8 +2,10 @@
 const db = require("../models/connectionDb");
 //validator permet de vérifier les champs renseignés.
 const validator = require('validator');
-//bcrypt permet de hasher le mot de passe renseigné.
+//bcrypt permet de hasher le mot de passe de l'utilisateur.
 const bcrypt = require('bcrypt');
+//jwt permet de générer un token afin d'authentifier les requêtes des utilisateurs.
+const jwt = require('jsonwebtoken');
 
 
 
@@ -29,3 +31,21 @@ module.exports.signUp = (req, res) => {
         .catch(error => res.status(500).json({ error }));
 };
 
+//connexion.
+module.exports.signIn = (req, res) => {
+    db.query('SELECT * FROM users WHERE pseudo = ?', req.body.pseudo, (err, results, fields) => {
+        if(!err) {
+            bcrypt.compare(req.body.password, results[0].password, (error, response) => {
+                if(response) {
+                    res.send(results);
+                    console.log("Utilisateur connecté.");
+                } else {
+                    res.send({ message: "Mauvaise combinaison pseudo/mdp." });
+                    console.log("Mauvaise combinaison pseudo/mdp.");
+                }
+            })
+        } else {
+            res.send({ message: "L'utilisateur n'existe pas dans la base de données." })
+        }
+    });
+}

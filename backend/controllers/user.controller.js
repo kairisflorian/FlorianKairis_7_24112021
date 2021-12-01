@@ -13,7 +13,7 @@ module.exports.getAllUsers = (req, res) => {
     });
 };
 
-//récupérer les informations d'un seul utilisateur.
+//récupérer les informations d'un utilisateur.
 module.exports.userInfo = (req, res) => {
     db.query('SELECT id, pseudo, email FROM users WHERE id = ?', [req.params.id], (err, results, fields) => {
         if(!err && results != "") {
@@ -24,4 +24,30 @@ module.exports.userInfo = (req, res) => {
             res.status(400).json({ message: `Id inconnu: ${req.params.id}`});
         }
     });
+};
+
+//mettre à jour le pseudo d'un utilisateur.
+module.exports.updateUser = (req, res) => {
+    db.query('UPDATE users SET pseudo = ? WHERE id = ?', [req.body.pseudo, req.params.id], (err, results, fields) => {
+        if(!err) {
+            console.log(results);
+            console.log("Pseudo mis à jour.");
+            res.status(200).json({ id: req.params.id, pseudo: req.body.pseudo });
+        } else {
+            console.log("Vous n'avez pas le droit de modifier ce pseudo");
+            res.status(400).json({ message: "Vous n'avez pas le droit de modifier ce pseudo" });
+        }
+    })
+};
+
+//supprimer un utilisateur
+module.exports.deleteUser = (req, res) => {
+    db.query('DELETE FROM users WHERE id = ?', [req.params.id], (err, results, fields) => {
+        if(!err) {
+            console.log('Utilisateur supprimé');
+            res.status(200).json({ message :"Utilisateur supprimé de la base de données." });
+        } else {
+            res.status(400).json({ err });
+        }
+    })
 };
