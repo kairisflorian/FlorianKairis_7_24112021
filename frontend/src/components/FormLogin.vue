@@ -1,27 +1,31 @@
 <template>
   <div class="FormBloc">
     <h1>{{ title }}</h1>
-    <form action="" class="FormEntry">
+    <form @submit.prevent = "handleSubmit" class="FormEntry">
       <div class="FormText">
         <label for="pseudo">Pseudo:</label>
-        <input type="text" name="pseudo" required />
+        <input type="text" name="pseudo" placeholder="Pseudo" v-model="pseudo" required />
       </div>
       <div class="FormText">
         <label for="password">Mot de passe:</label>
-        <input type="password" name="password" required />
+        <input type="password" name="password" placeholder="Mot de passe" v-model="password" required />
       </div>
       <div class="FormText" v-if="title != `Connexion`">
         <label for="email">Adresse email:</label>
-        <input type="email" name="email" required />
+        <input type="email" name="email" placeholder="Email" v-model="email" required />
       </div>
       <div>
         <button type="submit">{{ button }}</button>
+        <p>{{ message }}</p>
       </div>
     </form>
   </div>
 </template>
 
 <script>
+import axios from 'axios';
+axios.defaults.withCredentials = true;
+
 export default {
   props: {
     title: {
@@ -32,7 +36,37 @@ export default {
       type: String,
       required: true,
     },
+    message: {
+      type: String,
+    }
   },
+  data() {
+    return {
+      pseudo: '',
+      password: '',
+      email: ''
+    }
+  },
+  methods: {
+    handleSubmit() {
+      const data = {
+        pseudo: this.pseudo,
+        password: this.password,
+        email: this.email
+      }
+      if (this.$router.history.current.path === "/SignIn") {
+        axios.post('http://localhost:8080/api/users/login', data)
+        .then(reponse => this.message = reponse.data.message)
+        .catch(this.message = "Connexion impossible")
+        
+      } else if (this.$router.history.current.path === "/SignUp") {
+        axios.post('http://localhost:8080/api/users/register', data)
+        .then(reponse => this.message = "L'utilisateur " + reponse.data.pseudo + " a bien été crée.") 
+        .catch(erreur => console.log(erreur))
+      }
+    }
+    
+  }
 };
 </script>
 

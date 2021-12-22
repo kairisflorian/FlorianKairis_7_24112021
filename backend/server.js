@@ -4,14 +4,22 @@ const db = require("./models/connectionDb");
 const UserRoutes = require("./routes/users");
 const app = express();
 const cors = require("cors");
+const cookieParser = require('cookie-parser');
+
+
 var corsOptions = {
-    origin: "http://localhost:8081"
+    origin: ["http://localhost:8081"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    credentials: true
 };
 
-
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(cors(corsOptions));
+
+
+
 app.use("/api/users", UserRoutes);
 
 

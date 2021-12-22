@@ -9,6 +9,10 @@ const jwt = require('jsonwebtoken');
 
 
 
+
+
+
+
 //inscription (le corps de la requete contient le pseudo, l'email et le mot de passe. En réponse, on reçoit l'id unique généré).
 module.exports.signUp = (req, res) => {
     bcrypt.hash(req.body.password, 10)
@@ -17,7 +21,7 @@ module.exports.signUp = (req, res) => {
             if(validator.isEmail(req.body.email)) {
                 db.query('INSERT INTO users (pseudo, email, password) VALUES (?, ?, ?)', userDatas, (err, results, fields) => {
                     if(!err) {
-                        res.status(201).json({ userId: results.insertId });
+                        res.status(201).json({ userId: results.insertId, pseudo: req.body.pseudo });
                         console.log("utilisateur crée.")
                     } else {
                         res.status(200).json({ err });
@@ -37,7 +41,17 @@ module.exports.signIn = (req, res) => {
         if(!err) {
             bcrypt.compare(req.body.password, results[0].password, (error, response) => {
                 if(response) {
-                    res.send(results);
+                    res.status(200).json({
+                        id: results[0].id,
+                        pseudo: results[0].pseudo,
+                        email: results[0].email,
+                        token: jwt.sign(
+                            { id: results[0].id },
+                            'RANDOM_TOKEN_SECRET',
+                            { expiresIn: '24h' }
+                        ),
+                        message: `L'utilisateur ${req.body.pseudo} est bien connecté.`
+                    });
                     console.log("Utilisateur connecté.");
                 } else {
                     res.send({ message: "Mauvaise combinaison pseudo/mdp." });
