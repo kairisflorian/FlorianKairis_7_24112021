@@ -56,12 +56,18 @@ export default {
       }
       if (this.$router.history.current.path === "/SignIn") {
         axios.post('http://localhost:8080/api/users/login', data)
-        .then(reponse => this.message = reponse.data.message)
+        .then(response => this.message = response.data.message)
         .catch(this.message = "Connexion impossible")
         
       } else if (this.$router.history.current.path === "/SignUp") {
         axios.post('http://localhost:8080/api/users/register', data)
-        .then(reponse => this.message = "L'utilisateur " + reponse.data.pseudo + " a bien été crée.") 
+        .then( (reponse) => {
+          if (reponse.data.userId) {
+            this.$router.push( {name: 'SignIn'} )
+          } else if (reponse.data.err) {
+            this.message = "Problème lors de la création de compte. Veuillez réessayer."
+          }
+        }) 
         .catch(erreur => console.log(erreur))
       }
     }

@@ -11,7 +11,7 @@ Router.post("/login", authController.signIn);
 
 //base de données utilisateurs
 Router.get("/", userController.getAllUsers);
-Router.get("/:id", auth, userController.userInfo);
+Router.get("/:id", userController.userInfo);
 Router.put("/:id", userController.updateUser);
 Router.delete("/:id", userController.deleteUser);
 
