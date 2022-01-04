@@ -54,7 +54,9 @@ module.exports.signIn = (req, res) => {
                     });
                     console.log("Utilisateur connecté.");
                 } else {
-                    res.send({ message: "Mauvaise combinaison pseudo/mdp." });
+                    res.json({
+                        err: "Mauvaise combinaison pseudo/mdp."
+                    });
                     console.log("Mauvaise combinaison pseudo/mdp.");
                 }
             })

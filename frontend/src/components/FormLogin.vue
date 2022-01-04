@@ -56,9 +56,17 @@ export default {
       }
       if (this.$router.history.current.path === "/SignIn") {
         axios.post('http://localhost:8080/api/users/login', data)
-        .then(response => this.message = response.data.message)
-        .catch(this.message = "Connexion impossible")
-        
+        .then ( (reponse) => {
+          if (reponse.data.id) {
+            localStorage.setItem('id', reponse.data.id)
+            localStorage.setItem('token', reponse.data.token)
+            localStorage.setItem('pseudo', reponse.data.pseudo)
+            this.$router.push( {name: 'Home'} )
+          } else if (reponse.data.err) {
+            this.message = "Connexion impossible. Verifiez votre pseudo/mot de passe et réessayez."
+          }
+        })
+        .catch(erreur => console.log(erreur))
       } else if (this.$router.history.current.path === "/SignUp") {
         axios.post('http://localhost:8080/api/users/register', data)
         .then( (reponse) => {
