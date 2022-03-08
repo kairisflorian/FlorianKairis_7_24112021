@@ -32,8 +32,8 @@
 
 <style lang="scss" scoped>
 
-h1{
-  margin-top: 200px;
-}
+  h1{
+    margin-top: 200px;
+  }
 
 </style>

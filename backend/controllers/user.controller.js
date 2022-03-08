@@ -26,13 +26,13 @@ module.exports.userInfo = (req, res) => {
     });
 };
 
-//mettre à jour le pseudo d'un utilisateur.
+//mettre à jour le pseudo et l'email d'un utilisateur.
 module.exports.updateUser = (req, res) => {
-    db.query('UPDATE users SET pseudo = ? WHERE id = ?', [req.body.pseudo, req.params.id], (err, results, fields) => {
+    db.query('UPDATE users SET pseudo = ?, email = ? WHERE id = ?', [req.body.pseudo, req.body.email, req.params.id], (err, results, fields) => {
         if(!err) {
             console.log(results);
-            console.log("Pseudo mis à jour.");
-            res.status(200).json({ id: req.params.id, pseudo: req.body.pseudo });
+            console.log("Pseudo et email mis à jour.");
+            res.status(200).json({ id: req.params.id, pseudo: req.body.pseudo, email: req.body.email });
         } else {
             console.log("Vous n'avez pas le droit de modifier ce pseudo");
             res.status(400).json({ message: "Vous n'avez pas le droit de modifier ce pseudo" });
