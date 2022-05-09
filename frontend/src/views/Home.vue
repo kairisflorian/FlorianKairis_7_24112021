@@ -1,20 +1,29 @@
 <template>
   <div id="home">
-      <Header />
-      <h1 v-if="checkToken()">{{ pseudo }} est bien connecté.</h1>
-      <h1 v-else>Merci de vous connecter pour accéder au contenu.</h1>
+      <Header2 
+        activeLink="Accueil"
+      />
+      <newPostButton />
+      <Post />
+      <Footer />
   </div>
 </template>
 
 <script>
-  import Header from "@/components/Header.vue";
+  import Header2 from "@/components/Header2.vue";
+  import newPostButton from "@/components/newPostButton.vue";
+  import Post from "@/components/Post.vue";
+  import Footer from "@/components/Footer.vue";
   import axios from 'axios';
   axios.defaults.withCredentials = true;
 
   export default {
   name: "Home",
   components: {
-    Header
+    Header2,
+    Footer,
+    newPostButton,
+    Post
   },
   data() {
     return {
@@ -32,8 +41,8 @@
 
 <style lang="scss" scoped>
 
-  h1{
-    margin-top: 200px;
-  }
+#home{
+  background-image: url('../assets/coolbackground.png');
+}
 
 </style>

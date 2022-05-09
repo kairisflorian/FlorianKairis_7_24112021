@@ -1,3 +1,26 @@
+exports.allAccess = (req, res) => {
+    res.status(200).send("Contenu publique.");
+};
+
+exports.userBoard = (req, res) => {
+    res.status(200).send("Contenu de l'utilisateur.");
+};
+  
+exports.adminBoard = (req, res) => {
+    res.status(200).send("Contenu de l'admin.");
+};
+
+exports.moderatorBoard = (req, res) => {
+    res.status(200).send("Contenu du modérateur.");
+};
+
+
+
+
+
+
+
+/*
 //liaison avec la base de données.
 const db = require('../models/connectionDb');
 
@@ -51,3 +74,4 @@ module.exports.deleteUser = (req, res) => {
         }
     })
 };
+*/

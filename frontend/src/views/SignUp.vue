@@ -1,23 +1,30 @@
 <template>
   <div id="SignUp">
-    <Header />
-    <FormLogin2 
-      title="Inscrivez-vous"
-      button="S'inscrire"
+    <Header2 
+      activeLink="Inscription"
     />
+    <FormLogin 
+      message = "Vous avez déjà un compte ?"
+      button = "S'inscrire"
+      topMessage = "Créez votre compte"
+    />
+    <Footer />
   </div>
 </template>
 
 <script>
   
-  import Header from "@/components/Header.vue";
-  import FormLogin2 from "@/components/FormLogin2.vue";
+  import Header2 from "@/components/Header2.vue";
+  import FormLogin from "../components/FormLogin.vue"
+  import Footer from "@/components/Footer.vue"
+
 
   export default {
     name: "SignUp",
     components: {
-      Header,
-      FormLogin2
+      Header2,
+      FormLogin,
+      Footer,
     },
   };
   
@@ -30,7 +37,6 @@
     flex-direction: column;
     align-items: center;
     background: rgb(219, 226, 226);
-    height: 100vh;
-  }
+}
 
 </style>

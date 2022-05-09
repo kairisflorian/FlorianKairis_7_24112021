@@ -1,36 +1,40 @@
 <template>
   <div id="profile">
-    <Header />
-    <div id="bloc-info">
-      <h1>{{ title }}</h1>
-      <div id="infos">
-        <p>
-          <span id="bold">Pseudo :</span> 
-          <input type="text" v-model="pseudo.title" id="pseudoForm">
-        </p>
-        <p>
-          <span id="bold">Adresse email :</span> 
-          <input type="text" v-model="email.title" id="emailForm">
-        </p>
+    <Header2 />
+    <div>
+      <div id="bloc-info">
+        <h1>{{ title }}</h1>
+        <div id="infos">
+          <p>
+            <span id="bold">Pseudo :</span> 
+            <input type="text" v-model="pseudo.title" id="pseudoForm" class="form-control">
+          </p>
+          <p>
+            <span id="bold">Adresse email :</span> 
+            <input type="email" v-model="email.title" id="emailForm" class="form-control">
+          </p>
+        </div>
       </div>
-    </div>
-    <div id="buttons">
-      <button @click="homePage()">Retour à l'accueil</button>
-      <button @click="updateInfos()">Sauvegarder</button>
-    </div>
+      <div id="buttons">
+        <button @click="homePage()">Retour à l'accueil</button>
+        <button @click="updateInfos()">Sauvegarder</button>
+      </div>
+    </div>  
+    <Footer />
   </div>
 </template>
 
 <script>
-import Header from "../components/Header.vue";
+import Header2 from "../components/Header2.vue";
+import Footer from "../components/Footer.vue";
 import axios from 'axios';
 axios.defaults.withCredentials = true;
 
 export default {
   name: "Profile",
   components: {
-    Header
-    
+    Header2,
+    Footer
   },
   data() {
     return {
@@ -62,10 +66,9 @@ export default {
       axios.put(`http://localhost:8080/api/users/${id}`, data, { headers: {"Authorization" : `Bearer ${token}`} })
         .then( (reponse) => {
           localStorage.setItem('id', reponse.data.id)
-          localStorage.setItem('token', reponse.data.token)
           localStorage.setItem('pseudo', reponse.data.pseudo)
         })
-      
+      this.$router.push({ name: 'Home' });  
     },
 
     homePage() {
@@ -73,25 +76,30 @@ export default {
     }
   },
   
-  beforeMount() {
+  mounted() {
     this.getInfos()
   }
 };
 </script>
 
 <style lang="scss" scoped>
-
+#profile{
+  background-image: url('../assets/coolbackground.png');
+}
 #bloc-info{
-  margin-top: 200px;
+  margin-top: 150px;
   border: 1px solid gray;
-  border-top-right-radius: 40px 40px;
   margin-left: auto;
   margin-right: auto;
   max-width: 500px;
   min-width: 200px;
   min-height: 300px;
+  box-shadow: 12px 12px 22px grey;
+  border-radius: 30px;
+  background: #ffd7d7;
   h1{
     text-align: start;
+    padding-top: 3%;
     padding-left: 5%;
     color: rgb(255, 64, 0);
     border-bottom: 1px dotted gray;
@@ -100,6 +108,10 @@ export default {
   #infos{
     text-align: start;
     padding-left: 5%;
+    padding-right: 5%;
+    input{
+      margin-top: 10px;
+    }
     #bold{
       font-weight: bold;
     }
@@ -108,14 +120,28 @@ export default {
 
 #buttons{
   display: flex;
-  flex-direction: row;
   justify-content: space-evenly;
-  margin-top: 30px;
-  margin-bottom: 200px;
-  max-width: 500px;
-  min-width: 200px;
+  margin-top: 50px;
+  margin-bottom: 100px;
   margin-left: auto;
   margin-right: auto;
+  width: 500px;
+  min-width: 200px;
+  button{
+    height: 40px;
+    font-weight: bold;
+    color: white;
+    background-color: #fd2d01;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    box-shadow: 12px 12px 22px grey;
+    &:hover {
+      background: white;
+      border: 1px solid;
+      color: black;
+    }
+  }
 }
 
 </style>

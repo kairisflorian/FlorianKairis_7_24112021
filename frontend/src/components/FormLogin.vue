@@ -1,34 +1,50 @@
 <template>
-  <div class="FormBloc">
-    <h1>{{ title }}</h1>
-    <form @submit.prevent = "handleSubmit" class="FormEntry">
-      <div class="FormText">
-        <label for="pseudo">Pseudo:</label>
-        <input type="text" name="pseudo" placeholder="Pseudo" v-model="pseudo" required />
-      </div>
-      <div class="FormText">
-        <label for="password">Mot de passe:</label>
-        <input type="password" name="password" placeholder="Mot de passe" v-model="password" required />
-      </div>
-      <div class="FormText" v-if="title != `Connexion`">
-        <label for="email">Adresse email:</label>
-        <input type="email" name="email" placeholder="Email" v-model="email" required />
-      </div>
-      <div>
+  <section class="formulaire">
+    <div class="formLeft"></div>
+    <div class="formRight">
+      <img src="../assets/icon-min-black.png" alt="Logo groupomania" />
+      <h4>{{ topMessage }}</h4>
+      <form @submit.prevent = "handleSubmit">
+        <input type="text" class="form-control" placeholder="Pseudo" v-model="pseudo"/>
+        <input type="password" class="form-control" placeholder="*********" v-model="password" />
+        <input
+          type="email"
+          class="form-control"
+          placeholder="Adresse email"
+          v-model="email"
+          v-if="this.$router.history.current.path === '/SignUp'"
+        />
         <button type="submit">{{ button }}</button>
-        <p>{{ message }}</p>
-      </div>
-    </form>
-  </div>
+        <p>
+          {{ message }}
+          <router-link
+            to="SignIn"
+            style="color: #fd2d01"
+            v-if="this.$router.history.current.path === '/SignUp'"
+          >
+            Connectez-vous
+          </router-link>
+          <router-link
+            to="SignUp"
+            style="color: #fd2d01"
+            v-if="this.$router.history.current.path === '/SignIn'"
+          >
+            Créez votre compte
+          </router-link>
+        </p>
+      </form>
+    </div>
+  </section>
 </template>
 
 <script>
-import axios from 'axios';
+import axios from "axios";
 axios.defaults.withCredentials = true;
 
 export default {
+  name: "FormLogin",
   props: {
-    title: {
+    message: {
       type: String,
       required: true,
     },
@@ -36,76 +52,153 @@ export default {
       type: String,
       required: true,
     },
-    message: {
+    topMessage: {
       type: String,
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      pseudo: '',
-      password: '',
-      email: ''
-    }
+      pseudo: "",
+      password: "",
+      email: "",
+      erreur: ""
+    };
   },
   methods: {
     handleSubmit() {
       const data = {
         pseudo: this.pseudo,
         password: this.password,
-        email: this.email
-      }
+        email: this.email,
+      };
       if (this.$router.history.current.path === "/SignIn") {
-        axios.post('http://localhost:8080/api/users/login', data)
-        .then ( (reponse) => {
-          if (reponse.data.id) {
-            localStorage.setItem('id', reponse.data.id)
-            localStorage.setItem('token', reponse.data.token)
-            localStorage.setItem('pseudo', reponse.data.pseudo)
-            this.$router.push( {name: 'Home'} )
-          } else if (reponse.data.err) {
-            this.message = "Connexion impossible. Verifiez votre pseudo/mot de passe et réessayez."
-          }
-        })
-        .catch(erreur => console.log(erreur))
+        axios
+          .post("http://localhost:8080/api/users/login", data)
+          .then((reponse) => {
+            if (reponse.data.id) {
+              localStorage.setItem("id", reponse.data.id);
+              localStorage.setItem("token", reponse.data.token);
+              localStorage.setItem("pseudo", reponse.data.pseudo);
+              this.$router.push({ name: "Home" });
+            } else if (reponse.data.err) {
+              this.erreur =
+                "Connexion impossible. Verifiez votre pseudo/mot de passe et réessayez.";
+            }
+          })
+          .catch(function(error) {
+            if(error.response) {
+              console.log(error.response.data);
+              console.log(error.response.status);
+              console.log(error.response.headers);
+            }
+            else if(error.request) {
+              console.log(error.request);
+            }
+            else {
+              console.log('Error', error.message);
+            }
+            console.log(error.config);
+          });
       } else if (this.$router.history.current.path === "/SignUp") {
-        axios.post('http://localhost:8080/api/users/register', data)
-        .then( (reponse) => {
-          if (reponse.data.userId) {
-            this.$router.push( {name: 'SignIn'} )
-          } else if (reponse.data.err) {
-            this.message = "Problème lors de la création de compte. Veuillez réessayer."
-          }
-        }) 
-        .catch(erreur => console.log(erreur))
+        axios
+          .post("http://localhost:8080/api/users/register", data)
+          .then((reponse) => {
+            if (reponse.data.userId) {
+              this.$router.push({ name: "SignIn" });
+            } else if (reponse.data.err) {
+              this.errorMessage =
+                "Problème lors de la création de compte. Veuillez réessayer.";
+            }
+          })
+          .catch((erreur) => console.log(erreur));
       }
-    }
-    
-  }
+    },
+  },
 };
 </script>
 
-<style lang="scss">
-.FormBloc {
-  height: 400px;
-  margin-top: 100px;
-  width: 90%;
-  max-width: 800px;
-  border: 1px solid black;
+<style lang="scss" scoped>
+.formulaire {
+  height: 600px;
   display: flex;
-  justify-content: center;
+  width: 85%;
+  max-width: 1300px;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  box-shadow: 12px 12px 22px grey;
+  border-radius: 30px;
+}
+.formLeft {
+  width: 40%;
+  min-width: 435px;
+  background-image: url("../assets/test1.jpg");
+  background-size: cover;
+  background-position-x: 50%;
+  border-top-left-radius: 30px;
+  border-bottom-left-radius: 30px;
+}
+.formRight {
+  width: 60%;
+  background-color: white;
+  display: flex;
   flex-direction: column;
-  background-color: rosybrown;
-  .FormEntry {
+  justify-content: space-evenly;
+  padding-left: 5%;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  img {
+    width: 45%;
+    height: auto;
+  }
+  input {
+    margin-bottom: 20px;
+    height: 50px;
+    width: 70%;
+    min-width: 150px;
+  }
+  button {
+    margin-bottom: 30px;
+    width: 70%;
+    height: 50px;
+    font-weight: bold;
+    color: white;
+    background-color: #fd2d01;
+    border-radius: 4px;
+    border: none;
+    outline: none;
+    &:hover {
+      background: white;
+      border: 1px solid;
+      color: black;
+    }
+  }
+}
+@media screen and (max-width: 1000px) {
+  .formulaire {
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
-    height: 60%;
-    .FormText {
-      display: flex;
-      width: 70%;
-      max-width: 400px;
-      justify-content: space-between;
-      margin-left: 15%;
+    height: 1000px;
+    margin-top: 10%;
+    margin-bottom: 10%;
+  }
+  .formLeft {
+    width: 100%;
+    min-width: 0;
+    height: 45%;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 30px;
+  }
+  .formRight {
+    width: 100%;
+    height: 55%;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 30px;
+    input {
+      width: 90%;
+    }
+    button {
+      width: 90%;
     }
   }
 }
