@@ -25,7 +25,7 @@ db.roles = require("./roles.model.js")(sequelize, Sequelize);
 
 // Relation One-to-many utilisateur et posts
 db.users.hasMany(db.posts);
-db.posts.belongsTo(db.users);
+db.posts.belongsTo(db.users, { foreignKey: "userId", as: "user" });
 
 // Relation One-to-many utilisateur et commentaires
 db.users.hasMany(db.comments);

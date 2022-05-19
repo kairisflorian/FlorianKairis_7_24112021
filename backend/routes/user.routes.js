@@ -25,4 +25,16 @@ module.exports = function(app) {
     [authJwt.verifyToken, authJwt.isAdmin],
     controller.adminBoard
   );
+  // Récupération des infos de l'user
+  app.get(
+    "/api/users/:id",
+    [authJwt.verifyToken],
+    controller.findOne
+  );
+  // Modification des infos de l'user
+  app.put(
+    "/api/users/:id",
+    [authJwt.verifyToken],
+    controller.update
+  );
 };

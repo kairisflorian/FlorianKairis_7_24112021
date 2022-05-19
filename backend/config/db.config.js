@@ -1,8 +1,10 @@
+require('dotenv').config();
+
 module.exports = {
     HOST: "localhost",
-    USER: "root",
-    PASSWORD: "A7*fc00a7",
-    DB: "groupomania",
+    USER: process.env.DB_USER,
+    PASSWORD: process.env.DB_PASSWORD,
+    DB: process.env.DB_NAME,
     dialect: "mysql",
     pool: {
       max: 5,

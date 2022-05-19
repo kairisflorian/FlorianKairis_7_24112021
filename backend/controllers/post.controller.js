@@ -1,12 +1,31 @@
+const { posts } = require("../models");
 const db = require("../models");
 const User = db.users;
 const Post = db.posts;
 const Op = db.sequelize.Op;
 
-//Créer un nouveau post.
+//Créer et sauvegarder un nouveau post.
 module.exports.createPost = (req,res) => {
-
-}
+    Post.create({
+        title: req.body.title,
+        gif: req.body.gif,
+        userId: req.body.userId
+    }).then((data) => {
+        console.log(data);
+        res.status(200).send({
+            message: "Le post a bien été crée.",
+            id: posts.id,
+            title: posts.title,
+            gif: posts.gif,
+            userId: posts.userId
+        });
+    }).catch((err) => {
+        console.log(err);
+        res.status(500).send({
+            message: "Erreur lors de la création du post."
+        });
+    });
+};
 
 //Récupérer tous les posts
 module.exports.findAllPosts = (res,res) => {

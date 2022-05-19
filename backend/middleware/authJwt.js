@@ -4,25 +4,26 @@ const db = require("../models");
 const Users = db.users;
 
 // Vérification de l'existence du token et de sa validité
+
+
 verifyToken = (req, res, next) => {
-  let token = req.headers["x-access-token"];
-  // Si pas de token ...
-  if (!token) {
-    return res.status(403).send({
-      message: "Pas de token"
+  try {
+    const token = req.headers["x-access-token"];
+    const decodedToken = jwt.verify(token, config.secret);
+    const id = decodedToken.id;
+    req.auth.userId = { id };
+    if (req.body.id && req.body.id == id) {
+      throw 'Invalid user ID';
+    } else {
+      next();
+    }
+  } catch {
+    res.status(401).json({
+      error: new Error('Invalid request!')
     });
   }
-  // Vérification de la validité du token
-  jwt.verify(token, config.secret, (err, decoded) => {
-    if (err) {
-      return res.status(401).send({
-        message: "Non autorisé !"
-      });
-    }
-    req.userId = decoded.id;
-    next();
-  });
 };
+
 
 // Vérification du rôle administrateur
 isAdmin = (req, res, next) => {
@@ -42,7 +43,7 @@ isAdmin = (req, res, next) => {
   });
 };
 
-// Vérification du rôle administrateur
+// Vérification du rôle modérateur
 isModerator = (req, res, next) => {
   Users.findByPk(req.userId).then((users) => {
     users.getRoles().then((roles) => {

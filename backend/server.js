@@ -1,10 +1,6 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-//const db = require("./models/connectionDb");
-//const UserRoutes = require("./routes/users");
-//const PostRoutes = require("./routes/posts");
-//const CommentRoutes = require("./routes/comments");
-//const AnswerRoutes = require("./routes/answers");
+require('dotenv').config();
 const app = express();
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
@@ -21,13 +17,6 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(cors(corsOptions));
 
-
-/*
-app.use("/api/users", UserRoutes);
-app.use("/api/posts", PostRoutes);
-app.use("/api/comments", CommentRoutes);
-app.use("/api/answers", AnswerRoutes);
-*/
 
 // synchro sequelize
 const db = require("./models");

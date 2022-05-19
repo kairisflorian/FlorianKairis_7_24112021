@@ -1,3 +1,9 @@
+const db = require("../models");
+const Users = db.users;
+const Op = db.Sequelize.Op;
+
+//////////// Controlleurs pour tester l'authentification /////////////////////
+
 exports.allAccess = (req, res) => {
     res.status(200).send("Contenu publique.");
 };
@@ -13,6 +19,68 @@ exports.adminBoard = (req, res) => {
 exports.moderatorBoard = (req, res) => {
     res.status(200).send("Contenu du modérateur.");
 };
+
+
+////////////// Modification des informations des utilisateurs ////////////////////////
+
+
+// Récupérer un utilisateur avec un id
+exports.findOne = (req, res) => {
+    const id = req.params.id;
+    Users.findByPk(id)
+      .then((data) => {
+        if (data) {
+          console.log(data);
+          res.status(200).send({
+              username: data.username,
+              email: data.email
+          });
+        } else {
+          res.status(404).send({
+            message: `Impossible de récupérer les infos de l'utilisateur id=${id}.`
+          });
+        }
+      })
+      .catch((err) => {
+        res.status(500).send({
+          message: "Erreur lors de la récupérations des infos de l'user avec l' id=" + id
+        });
+    });
+};
+
+// Update infos utilisateur
+exports.update = (req, res) => {
+    const id = req.params.id;
+    Users.update({
+        username: req.body.username,
+        email: req.body.email
+    }, { where: { id: id } })
+    .then((data) => {
+        if (data) {
+            res.status(200).send({
+                message: "Informations mises à jour",
+                id: req.params.id,
+                username: req.body.username,
+                email: req.body.email
+            });
+            console.log(data);;
+        } else {
+            res.send({
+                message: "Impossible de modifier les informations de l'utilisateur"
+            });
+        }
+    }).catch((err) => {
+        res.status(500).send({
+            message: "Erreur lors de la modification."
+        });
+    });
+};
+
+
+
+
+
+
 
 
 
