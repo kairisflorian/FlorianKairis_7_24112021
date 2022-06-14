@@ -24,16 +24,17 @@ exports.moderatorBoard = (req, res) => {
 ////////////// Modification des informations des utilisateurs ////////////////////////
 
 
-// Récupérer un utilisateur avec un id
-exports.findOne = (req, res) => {
-    const id = req.params.id;
+// Récupérer les infos d'un utilisateur
+exports.getUser = (req, res) => {
+    const id = req.auth.id;
     Users.findByPk(id)
       .then((data) => {
         if (data) {
           console.log(data);
           res.status(200).send({
-              username: data.username,
-              email: data.email
+              email: data.email,
+              firstName: data.firstName,
+              lastName: data.lastName
           });
         } else {
           res.status(404).send({
@@ -49,19 +50,17 @@ exports.findOne = (req, res) => {
 };
 
 // Update infos utilisateur
-exports.update = (req, res) => {
-    const id = req.params.id;
+exports.updateUser = (req, res) => {
+    const id = req.auth.id;
     Users.update({
-        username: req.body.username,
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
         email: req.body.email
     }, { where: { id: id } })
     .then((data) => {
         if (data) {
             res.status(200).send({
-                message: "Informations mises à jour",
-                id: req.params.id,
-                username: req.body.username,
-                email: req.body.email
+                message: "Informations mises à jour"
             });
             console.log(data);;
         } else {

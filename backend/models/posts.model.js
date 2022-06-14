@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
                 len: [2, 120]
             }
         },
-        gif: {
+        imageUrl: {
             type: Sequelize.DataTypes.STRING
         }
     });

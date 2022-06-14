@@ -8,10 +8,10 @@ const Users = db.users;
 
 verifyToken = (req, res, next) => {
   try {
-    const token = req.headers["x-access-token"];
+    const token = req.headers.authorization.split(' ')[1];
     const decodedToken = jwt.verify(token, config.secret);
     const id = decodedToken.id;
-    req.auth.userId = { id };
+    req.auth = { id };
     if (req.body.id && req.body.id == id) {
       throw 'Invalid user ID';
     } else {

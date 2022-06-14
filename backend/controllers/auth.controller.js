@@ -26,7 +26,7 @@ exports.signup = (req, res) => {
               [Op.or]: req.body.roles
             }
           }
-        }).then(roles => {
+        }).then((roles) => {
           users.setRoles(roles).then(() => {
             res.send({ message: "L'utilisateur a été crée avec succès !" });
           });
@@ -69,9 +69,14 @@ exports.signin = (req, res) => {
         });
       }
       // création de la variable token
-      var token = jwt.sign({ id: users.id, username: users.username, email: users.email }, config.secret, {
-        expiresIn: 86400 // 24 hours
-      });
+      var token = jwt.sign({
+         id: users.id, 
+         email: users.email,
+         firstName: users.firstName,
+         lastName: users.lastName 
+        }, 
+        config.secret, 
+        { expiresIn: 86400 });
       var authorities = [];
       // Récupération du rôle (getRoles) 
       users.getRoles().then((roles) => {
@@ -80,10 +85,6 @@ exports.signin = (req, res) => {
         }
         // La réponse envoyée : id, username, email, role et le token d'accès
         res.status(200).send({
-          id: users.id,
-          firstName: users.firstName,
-          lastName: users.lastName,
-          email: users.email,
           roles: authorities,
           accessToken: token
         });

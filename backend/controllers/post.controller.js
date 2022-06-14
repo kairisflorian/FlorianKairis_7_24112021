@@ -8,7 +8,7 @@ const Op = db.sequelize.Op;
 module.exports.createPost = (req,res) => {
     Post.create({
         title: req.body.title,
-        gif: req.body.gif,
+        imageUrl: req.body.imageUrl,
         userId: req.body.userId
     }).then((data) => {
         console.log(data);
