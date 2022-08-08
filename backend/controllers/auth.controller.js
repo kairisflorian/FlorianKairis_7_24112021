@@ -12,8 +12,6 @@ var bcrypt = require("bcrypt");
 exports.signup = (req, res) => {
   // Enregistrement des utilisateurs dans la base de données (Users.create).
   Users.create({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
     email: req.body.email,
     // hachage du mdp
     password: bcrypt.hashSync(req.body.password, 8)
@@ -71,9 +69,7 @@ exports.signin = (req, res) => {
       // création de la variable token
       var token = jwt.sign({
          id: users.id, 
-         email: users.email,
-         firstName: users.firstName,
-         lastName: users.lastName 
+         email: users.email
         }, 
         config.secret, 
         { expiresIn: 86400 });

@@ -10,7 +10,10 @@ module.exports = function(app) {
       );
       next();
     });
-    app.post("api/posts", [authJwt.verifyToken], multer, controller.createPost);
+    app.post("/api/posts", [authJwt.verifyToken], multer, controller.createPost);
+    app.put("/api/posts/:id", [authJwt.verifyToken], multer, controller.updatePost);
+    app.get("/api/posts", [authJwt.verifyToken], controller.getAllPosts);
+    app.delete("/api/posts/:id", [authJwt.verifyToken], controller.deletePost);
 };
 
 

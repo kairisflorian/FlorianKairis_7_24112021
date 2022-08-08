@@ -7,7 +7,7 @@ module.exports = (sequelize, Sequelize) => {
                 len: [2, 120]
             }
         },
-        imageUrl: {
+        image: {
             type: Sequelize.DataTypes.STRING
         }
     });

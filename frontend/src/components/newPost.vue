@@ -4,7 +4,7 @@
             <input type="text" placeholder="Titre" class="form-control titreForm">
             <div class="gif">
                 <i class="fas fa-upload"></i>
-                <p>Sélectionnez un fichier GIF à uploader</p>
+                <p>Sélectionnez une image à uploader</p>
                 <div class="custom-file">
                     <input type="file" class="custom-file-input" id="customFile">
                     <label for="customFile" class="custom-file-label">Choisir un fichier</label>

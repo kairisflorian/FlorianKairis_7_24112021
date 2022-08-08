@@ -4,6 +4,7 @@ require('dotenv').config();
 const app = express();
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
+const path = require('path');
 
 
 var corsOptions = {
@@ -41,9 +42,13 @@ function initial() {
 }
 
 // routes
+app.use('/images', express.static(path.join(__dirname, 'images')));
 require('./routes/auth.routes')(app);
 require('./routes/user.routes')(app);
-//require('./routes/posts.routes')(app);
+require('./routes/posts.routes')(app);
+require('./routes/like.routes')(app);
+
+
 
 //lancer le serveur 
 const PORT = process.env.PORT || 8080;

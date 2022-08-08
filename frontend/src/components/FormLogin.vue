@@ -5,15 +5,8 @@
       <img src="../assets/icon-min-black.png" alt="Logo groupomania" />
       <h4>{{ topMessage }}</h4>
       <form @submit.prevent = "handleSubmit">
-        <input type="text" class="form-control" placeholder="Pseudo" v-model="pseudo"/>
+        <input type="text" class="form-control" placeholder="Adresse e-mail" v-model="email"/>
         <input type="password" class="form-control" placeholder="*********" v-model="password" />
-        <input
-          type="email"
-          class="form-control"
-          placeholder="Adresse email"
-          v-model="email"
-          v-if="this.$router.history.current.path === '/SignUp'"
-        />
         <button type="submit">{{ button }}</button>
         <p>
           {{ message }}
@@ -59,7 +52,6 @@ export default {
   },
   data() {
     return {
-      pseudo: "",
       password: "",
       email: "",
       erreur: ""
@@ -68,50 +60,27 @@ export default {
   methods: {
     handleSubmit() {
       const data = {
-        pseudo: this.pseudo,
-        password: this.password,
         email: this.email,
+        password: this.password        
       };
       if (this.$router.history.current.path === "/SignIn") {
         axios
-          .post("http://localhost:8080/api/users/login", data)
-          .then((reponse) => {
-            if (reponse.data.id) {
-              localStorage.setItem("id", reponse.data.id);
-              localStorage.setItem("token", reponse.data.token);
-              localStorage.setItem("pseudo", reponse.data.pseudo);
-              this.$router.push({ name: "Home" });
-            } else if (reponse.data.err) {
-              this.erreur =
-                "Connexion impossible. Verifiez votre pseudo/mot de passe et réessayez.";
-            }
+          .post("http://localhost:8080/api/auth/signin", data)
+          .then((res) => {
+            console.log(res.data);
+            this.$router.push({ name: "Home" });
           })
-          .catch(function(error) {
-            if(error.response) {
-              console.log(error.response.data);
-              console.log(error.response.status);
-              console.log(error.response.headers);
-            }
-            else if(error.request) {
-              console.log(error.request);
-            }
-            else {
-              console.log('Error', error.message);
-            }
-            console.log(error.config);
+          .catch((err) => {
+            console.log(err);
           });
       } else if (this.$router.history.current.path === "/SignUp") {
         axios
-          .post("http://localhost:8080/api/users/register", data)
-          .then((reponse) => {
-            if (reponse.data.userId) {
-              this.$router.push({ name: "SignIn" });
-            } else if (reponse.data.err) {
-              this.errorMessage =
-                "Problème lors de la création de compte. Veuillez réessayer.";
-            }
+          .post("http://localhost:8080/api/auth/signup", data)
+          .then((res) => {
+            console.log(res.data);
+            this.$router.push({ name: "SignIn" });
           })
-          .catch((erreur) => console.log(erreur));
+          .catch((err) => console.log(err));
       }
     },
   },
