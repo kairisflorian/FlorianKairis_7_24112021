@@ -4,7 +4,7 @@
         activeLink="Accueil"
       />
       <newPostButton />
-      <Post />
+      <Post :posts="posts"/>
       <Footer />
   </div>
 </template>
@@ -27,13 +27,35 @@
   },
   data() {
     return {
-      pseudo: localStorage.getItem('pseudo')
+        posts: []
     }
   },
   methods: {
     checkToken() {
-      return localStorage.getItem('token')
+      if (!localStorage.getItem('token')) {
+        this.$router.push({ name: 'SignIn' });
+      }
+    },
+    getPosts() {
+        let token = localStorage.getItem("token");
+        axios
+            .get("http://localhost:8080/api/posts", {
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            })
+            .then((res) => {
+                console.log(res.data);
+                this.posts = res.data;
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }
+  },
+  mounted() {
+    this.checkToken();
+    this.getPosts();
   }
   
 };

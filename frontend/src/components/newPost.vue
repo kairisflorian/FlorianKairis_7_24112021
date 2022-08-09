@@ -1,7 +1,7 @@
 <template>
     <div class="newPost">
         <form>
-            <input type="text" placeholder="Titre" class="form-control titreForm">
+            <input type="text" placeholder="Titre" class="form-control titreForm" v-model="title">
             <div class="gif">
                 <i class="fas fa-upload"></i>
                 <p>Sélectionnez une image à uploader</p>
@@ -10,15 +10,48 @@
                     <label for="customFile" class="custom-file-label">Choisir un fichier</label>
                 </div>
             </div>
-            <button>Soumettre le post</button>
-            <button>Retour à l'accueil</button>
+            <button type="submit" @click="createPost">Créer un post</button>
+            <button @click="homePage">Retour à l'accueil</button>
         </form>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
 export default{
-    name: "newPost"
+    name: "newPost",
+    data() {
+        return {
+            image: "",
+            title: ""
+        }
+    },
+    methods: {
+        createPost() {
+            const formData = new FormData();
+            const imageFile = document.querySelector('#customFile');
+            formData.append("image", imageFile.files[0]);
+            formData.append("title", this.title);
+            const token = localStorage.getItem("token");
+            axios
+                .post("http://localhost:8080/api/posts", formData, {
+                    'Content-type': 'multipart/form-data',
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                })
+                .then((res) => {
+                    console.log(res.data);
+                    this.$router.push({ name: "Home" });
+                })
+                .catch((err) => {
+                    console.log(err);
+                })
+        },
+        homePage() {
+            this.$router.push({ name: "Home" });
+        }
+    }
 }
 </script>
 

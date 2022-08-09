@@ -68,6 +68,7 @@ export default {
           .post("http://localhost:8080/api/auth/signin", data)
           .then((res) => {
             console.log(res.data);
+            localStorage.setItem("token", res.data.accessToken);
             this.$router.push({ name: "Home" });
           })
           .catch((err) => {

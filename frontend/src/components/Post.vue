@@ -1,17 +1,22 @@
 <template>
-    <div class="post">
-        <div class="info">
-            <p>{{ pseudo }}</p>
-            <i class="fas fa-circle"></i>
-            <p>{{ date }}</p>
-            <i class="fas fa-ellipsis-v"></i>
-        </div>
-        <div class="gif">
-            <iframe :src="gif" width="100%" height="100%" frameBorder="0" class="giphy-embed" allowFullScreen></iframe>
-        </div>
-        <div class="icons">
-            <div><i class="fas fa-comment-alt"></i></div>
-            <div><i class="fas fa-share-alt"></i></div>
+    <div>
+        <div class="post" v-for="post in posts" :key="post">
+            <div class="info">
+                <i class="fas fa-ellipsis-v"></i>
+            </div>
+            <div class="title">
+                <p>{{ post.title }}</p>
+            </div>
+            <div class="image">
+                <img :src="post.image" alt="Image du post">
+            </div>
+            <div class="icons">
+                <div class="likes">
+                    <i class="far fa-heart"></i>
+                    <p>{{ likes }}</p>
+                </div>
+                <div><i class="fas fa-share-alt"></i></div>
+            </div>
         </div>
     </div>
 </template>
@@ -22,10 +27,11 @@ export default{
     name: "Post",
     data(){
         return {
-            pseudo: "Pseudo",
-            date: "2h",
-            gif: "https://giphy.com/embed/PLJ8Y8Nbdu2s4JsCHh"
+            likes: 0
         }
+    },
+    props: {
+        posts: Array
     }
 }
 
@@ -51,15 +57,6 @@ export default{
         height: 10%;
         width: 100%;
         padding-left: 20px;
-        p{
-            margin-bottom: 0;
-        }
-        .fa-circle{
-            font-size: 0.5rem;
-            margin-left: 10px;
-            margin-right: 10px;
-            color: #fd2d01
-        }
         .fa-ellipsis-v{
             margin-left: auto;
             padding-right: 20px;
@@ -68,10 +65,25 @@ export default{
             cursor: pointer;
         }
     }
-    .gif{
+    .title{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        p{
+            font-weight: bold;
+        }
+    }
+    .image{
         height: 80%;
         width: 90%;
         margin: auto;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        img{
+            max-width: 100%;
+            max-height: 100%;
+        }
     }
     .icons{
         display: flex;
@@ -81,6 +93,15 @@ export default{
         width: 100%;
         padding-left: 20px;
         padding-right: 20px;
+        .likes{
+            p{
+                margin: 0
+            }
+            display: flex;
+            width: 10%;
+            justify-content: space-around;
+            align-items: center;
+        }
         i{
             font-size: 1.3rem;
             color: #fd2d01;

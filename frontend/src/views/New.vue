@@ -17,7 +17,12 @@ export default{
         Header2,
         newPost,
         Footer
+    },
+    mounted() {
+    if (!localStorage.getItem('token')) {
+      this.$router.push({ name: 'SignIn' });
     }
+  }
 }
 </script>
 

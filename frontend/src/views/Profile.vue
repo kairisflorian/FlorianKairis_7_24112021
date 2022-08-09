@@ -77,7 +77,9 @@ export default {
   },
   
   mounted() {
-    this.getInfos()
+    if (!localStorage.getItem('token')) {
+      this.$router.push({ name: 'SignIn' });
+    }
   }
 };
 </script>
