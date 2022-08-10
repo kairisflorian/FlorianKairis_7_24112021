@@ -1,4 +1,5 @@
 <template>
+
     <div class="newPost">
         <form>
             <input type="text" placeholder="Titre" class="form-control titreForm" v-model="title">
@@ -6,24 +7,30 @@
                 <i class="fas fa-upload"></i>
                 <p>Sélectionnez une image à uploader</p>
                 <div class="custom-file">
-                    <input type="file" class="custom-file-input" id="customFile">
+                    <input type="file" class="custom-file-input" id="customFile" @change="onFileChange">
                     <label for="customFile" class="custom-file-label">Choisir un fichier</label>
+                </div>
+                <div id="preview">
+                    <img :src="imgUrl" v-if="imgUrl">
                 </div>
             </div>
             <button type="submit" @click="createPost">Créer un post</button>
             <button @click="homePage">Retour à l'accueil</button>
         </form>
     </div>
+
 </template>
 
 <script>
+
 import axios from 'axios';
+
 export default{
     name: "newPost",
     data() {
         return {
-            image: "",
-            title: ""
+            title: "",
+            imgUrl: null
         }
     },
     methods: {
@@ -50,9 +57,14 @@ export default{
         },
         homePage() {
             this.$router.push({ name: "Home" });
+        },
+        onFileChange(e) {
+            const file = e.target.files[0];
+            this.imgUrl = URL.createObjectURL(file);
         }
     }
 }
+
 </script>
 
 <style lang="scss" scoped>
@@ -60,7 +72,7 @@ export default{
 .newPost{
     width: 80%;
     max-width: 1000px;
-    height: 700px;
+    height: 800px;
     margin: 80px auto 80px auto;
     border: 2px solid #fd2d01;
     border-radius: 26px 26px 26px 26px / 23px 23px 23px 23px;
@@ -85,12 +97,12 @@ export default{
             align-items: center;
             justify-content: space-evenly;
             width: 80%;
-            height: 300px;
+            height: 400px;
             border: 1px solid #fd2d01;
             border-radius: 26px 26px 26px 26px / 23px 23px 23px 23px;
             margin-top: 50px;
             margin-bottom: 50px;
-            padding-bottom: 60px;
+            padding-bottom: 30px;
             background-image: url("../assets/coolbackground.png");
             i{
                 font-size: 3rem;
@@ -98,6 +110,15 @@ export default{
             }
             .custom-file{
                 width: 80%;
+            }
+            #preview{
+                max-height: 50%;
+                max-width: 100%;
+                margin-top: 5%;
+                img{
+                    max-height: 100%;
+                    max-width: 100%;
+                }
             }
         }
         button {

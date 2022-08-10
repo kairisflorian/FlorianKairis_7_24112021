@@ -1,7 +1,14 @@
 <template>
+
     <div>
         <div class="post" v-for="post in posts" :key="post">
+            <modale 
+                :revele="revele" 
+                :toggleModale="toggleModale"
+                deleteMessage= "Etes-vous sûr de vouloir supprimer ce post ?">
+            </modale>
             <div class="info">
+                <i class="fas fa-trash-alt" @click="toggleModale" ></i>
                 <i class="fas fa-ellipsis-v"></i>
             </div>
             <div class="title">
@@ -19,15 +26,27 @@
             </div>
         </div>
     </div>
+
 </template>
 
 <script>
 
+import Modale from './Modale.vue'
+
 export default{
     name: "Post",
+    components: {
+        'modale': Modale
+    },
     data(){
         return {
-            likes: 0
+            likes: 0,
+            revele: false
+        }
+    },
+    methods: {
+        toggleModale() {
+            this.revele = !this.revele;
         }
     },
     props: {
@@ -38,6 +57,7 @@ export default{
 </script>
 
 <style lang="scss" scoped>
+
 .post{
     display: flex;
     flex-direction: column;
@@ -52,15 +72,14 @@ export default{
     box-shadow: 12px 12px 22px grey;
     .info{
         display: flex;
-        justify-content: flex-start;
+        justify-content: flex-end;
         align-items: center;
         height: 10%;
         width: 100%;
         padding-left: 20px;
-        .fa-ellipsis-v{
-            margin-left: auto;
+        i{
             padding-right: 20px;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             color: #fd2d01;
             cursor: pointer;
         }
@@ -109,4 +128,5 @@ export default{
         }
     }
 }
+
 </style>
