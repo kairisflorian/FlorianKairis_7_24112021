@@ -1,15 +1,44 @@
 <template>
 
     <div>
+        <!-- Modale suppression post -->
+        <modale v-if="reveleDelete" v-bind:reveleDelete="reveleDelete" v-bind:toggleDelete="toggleDelete">
+            <template v-slot:content>
+                <p>Êtes-vous sûr de vouloir supprimer ce post ?</p>
+            </template>
+            <template v-slot:buttons>
+                <button class="btn btn-outline-success">Oui</button>
+                <button class="btn btn-outline-danger" @click="toggleDelete">Non</button>
+            </template>        
+        </modale>
+        <!-- Modale modification post -->
+        <modale v-if="reveleModify" v-bind:reveleModify="reveleModify" v-bind:toggleModify="toggleModify">
+            <template v-slot:content>
+                <form>
+                    <input type="text" placeholder="Titre" class="form-control titreForm" v-model="title">
+                    <div class="gif">
+                        <i class="fas fa-upload"></i>
+                        <p>Sélectionnez une image à uploader</p>
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" id="customFile" @change="onFileChange">
+                            <label for="customFile" class="custom-file-label">Choisir un fichier</label>
+                        </div>
+                        <div id="preview">
+                            <img :src="imgUrl" v-if="imgUrl">
+                        </div>
+                    </div>
+                </form>
+            </template>
+            <template v-slot:buttons>
+                <button class="btn btn-outline-success">Modifier le post</button>
+                <button class="btn btn-outline-danger" @click="toggleModify">Retourner à l'accueil</button>
+            </template>       
+        </modale>
+        <!-- Card post -->    
         <div class="post" v-for="post in posts" :key="post">
-            <modale 
-                :revele="revele" 
-                :toggleModale="toggleModale"
-                deleteMessage= "Etes-vous sûr de vouloir supprimer ce post ?">
-            </modale>
             <div class="info">
-                <i class="fas fa-trash-alt" @click="toggleModale" ></i>
-                <i class="fas fa-ellipsis-v"></i>
+                <i class="fas fa-trash-alt" @click="toggleDelete"></i>
+                <i class="fas fa-ellipsis-v" @click="toggleModify"></i>
             </div>
             <div class="title">
                 <p>{{ post.title }}</p>
@@ -29,104 +58,110 @@
 
 </template>
 
+
 <script>
 
-import Modale from './Modale.vue'
+    import modale from "./Modal.vue"
 
-export default{
-    name: "Post",
-    components: {
-        'modale': Modale
-    },
-    data(){
-        return {
-            likes: 0,
-            revele: false
+    export default{
+        name: "Post",
+        data(){
+            return {
+                likes: 0,
+                reveleModify: false,
+                reveleDelete: false
+            }
+        },
+        components: {
+            "modale": modale
+        },
+        props: {
+            posts: Array
+        },
+        methods: {
+            toggleModify() {
+                this.reveleModify = !this.reveleModify;
+            },
+            toggleDelete() {
+                this.reveleDelete = !this.reveleDelete;
+            }
         }
-    },
-    methods: {
-        toggleModale() {
-            this.revele = !this.revele;
-        }
-    },
-    props: {
-        posts: Array
     }
-}
 
 </script>
 
+
 <style lang="scss" scoped>
 
-.post{
-    display: flex;
-    flex-direction: column;
-    margin: auto;
-    margin-bottom: 60px;
-    height: 600px;
-    width: 80%;
-    min-width: 450px;
-    max-width: 850px;
-    border: 1px solid black;
-    background-color: white;
-    box-shadow: 12px 12px 22px grey;
-    .info{
+    .post{
         display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        height: 10%;
-        width: 100%;
-        padding-left: 20px;
-        i{
-            padding-right: 20px;
-            font-size: 1.3rem;
-            color: #fd2d01;
-            cursor: pointer;
-        }
-    }
-    .title{
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        p{
-            font-weight: bold;
-        }
-    }
-    .image{
-        height: 80%;
-        width: 90%;
+        flex-direction: column;
         margin: auto;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        img{
-            max-width: 100%;
-            max-height: 100%;
-        }
-    }
-    .icons{
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        height: 10%;
-        width: 100%;
-        padding-left: 20px;
-        padding-right: 20px;
-        .likes{
-            p{
-                margin: 0
-            }
+        margin-bottom: 60px;
+        height: 600px;
+        width: 80%;
+        min-width: 450px;
+        max-width: 850px;
+        border: 1px solid black;
+        background-color: white;
+        box-shadow: 12px 12px 22px grey;
+        .info{
             display: flex;
-            width: 10%;
-            justify-content: space-around;
+            justify-content: flex-end;
             align-items: center;
+            height: 10%;
+            width: 100%;
+            padding-left: 20px;
+            i{
+                padding-right: 20px;
+                font-size: 1.3rem;
+                color: #fd2d01;
+                cursor: pointer;
+            }
         }
-        i{
-            font-size: 1.3rem;
-            color: #fd2d01;
-            cursor: pointer;
+        .title{
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            p{
+                font-weight: bold;
+            }
+        }
+        .image{
+            height: 80%;
+            width: 90%;
+            margin: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            img{
+                max-width: 100%;
+                max-height: 100%;
+            }
+        }
+        .icons{
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 10%;
+            width: 100%;
+            padding-left: 20px;
+            padding-right: 20px;
+            .likes{
+                p{
+                    margin: 0
+                }
+                display: flex;
+                width: 10%;
+                justify-content: space-around;
+                align-items: center;
+            }
+            i{
+                font-size: 1.3rem;
+                color: #fd2d01;
+                cursor: pointer;
+            }
         }
     }
-}
 
 </style>
