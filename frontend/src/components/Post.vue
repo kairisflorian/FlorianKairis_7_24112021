@@ -3,16 +3,20 @@
     <div>
         <!-- Modale suppression post -->
         <modale v-if="reveleDelete" v-bind:reveleDelete="reveleDelete" v-bind:toggleDelete="toggleDelete">
+            <!-- Contenu de la modale -->
             <template v-slot:content>
                 <p>Êtes-vous sûr de vouloir supprimer ce post ?</p>
             </template>
+            <!-- Boutons de la modale -->
             <template v-slot:buttons>
-                <button class="btn btn-outline-success">Oui</button>
+                <button class="btn btn-outline-success" @click="deletePost">Oui</button>
                 <button class="btn btn-outline-danger" @click="toggleDelete">Non</button>
             </template>        
         </modale>
         <!-- Modale modification post -->
         <modale v-if="reveleModify" v-bind:reveleModify="reveleModify" v-bind:toggleModify="toggleModify">
+            <!-- Contenu de la modale -->
+            <!-- 
             <template v-slot:content>
                 <form>
                     <input type="text" placeholder="Titre" class="form-control titreForm" v-model="title">
@@ -29,16 +33,18 @@
                     </div>
                 </form>
             </template>
+            -->
+            <!-- Boutons de la modale -->
             <template v-slot:buttons>
                 <button class="btn btn-outline-success">Modifier le post</button>
                 <button class="btn btn-outline-danger" @click="toggleModify">Retourner à l'accueil</button>
-            </template>       
+            </template>                   
         </modale>
         <!-- Card post -->    
-        <div class="post" v-for="post in posts" :key="post">
+        <div class="post" v-for="(post, idx) in posts" :key="idx">
             <div class="info">
-                <i class="fas fa-trash-alt" @click="toggleDelete"></i>
-                <i class="fas fa-ellipsis-v" @click="toggleModify"></i>
+                <i class="fas fa-trash-alt" @click="toggleDelete(); getPostId(post.id)" v-if="post.userId === userId"></i>
+                <i class="fas fa-ellipsis-v" @click="toggleModify(); getPostId(post.id)" v-if="post.userId === userId"></i>
             </div>
             <div class="title">
                 <p>{{ post.title }}</p>
@@ -61,7 +67,9 @@
 
 <script>
 
-    import modale from "./Modal.vue"
+    import modale from "./Modal.vue";
+    import axios from 'axios';
+    axios.defaults.withCredentials = true;
 
     export default{
         name: "Post",
@@ -69,14 +77,17 @@
             return {
                 likes: 0,
                 reveleModify: false,
-                reveleDelete: false
+                reveleDelete: false,
+                postId: null
             }
         },
         components: {
             "modale": modale
         },
         props: {
-            posts: Array
+            posts: Array,
+            userId: Number,
+            getPosts: Function
         },
         methods: {
             toggleModify() {
@@ -84,6 +95,27 @@
             },
             toggleDelete() {
                 this.reveleDelete = !this.reveleDelete;
+            },
+            getPostId(e) {
+                this.postId = e;
+            },
+            deletePost() {
+                let token = localStorage.getItem('token');
+                let id = this.postId;
+                axios
+                    .delete(`http://localhost:8080/api/posts/${id}`, {
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }
+                    })
+                    .then((res) => {
+                        console.log(res.data);
+                        this.toggleDelete();
+                        this.getPosts();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    })
             }
         }
     }

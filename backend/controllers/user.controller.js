@@ -32,9 +32,7 @@ exports.getUser = (req, res) => {
         if (data) {
           console.log(data);
           res.status(200).send({
-              email: data.email,
-              firstName: data.firstName,
-              lastName: data.lastName
+              id: data.id
           });
         } else {
           res.status(404).send({

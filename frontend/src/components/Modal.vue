@@ -70,7 +70,7 @@
         color: #333;
         padding: 40px;
         position: fixed;
-        top: 20%;
+        top: 10%;
         max-width: 900px;
         .content {
             margin-top: 20px;
