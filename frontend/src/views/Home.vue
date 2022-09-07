@@ -30,7 +30,6 @@
         data() {
             return {
                 posts: [],
-                verified: false,
                 userId: null
             }
         },

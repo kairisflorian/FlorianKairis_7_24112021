@@ -16,35 +16,33 @@
         <!-- Modale modification post -->
         <modale v-if="reveleModify" v-bind:reveleModify="reveleModify" v-bind:toggleModify="toggleModify">
             <!-- Contenu de la modale -->
-            <!-- 
             <template v-slot:content>
                 <form>
-                    <input type="text" placeholder="Titre" class="form-control titreForm" v-model="title">
+                    <input type="text" placeholder="Titre" class="form-control titreForm" v-model="postTitle">
                     <div class="gif">
                         <i class="fas fa-upload"></i>
                         <p>Sélectionnez une image à uploader</p>
                         <div class="custom-file">
-                            <input type="file" class="custom-file-input" id="customFile" @change="onFileChange">
+                            <input type="file" class="custom-file-input" id="imgFile" @change="onFileChange">
                             <label for="customFile" class="custom-file-label">Choisir un fichier</label>
                         </div>
                         <div id="preview">
-                            <img :src="imgUrl" v-if="imgUrl">
+                            <img :src="postImg" v-if="postImg">
                         </div>
                     </div>
                 </form>
             </template>
-            -->
             <!-- Boutons de la modale -->
             <template v-slot:buttons>
-                <button class="btn btn-outline-success">Modifier le post</button>
+                <button class="btn btn-outline-success" type="submit" @click="updatePost">Modifier le post</button>
                 <button class="btn btn-outline-danger" @click="toggleModify">Retourner à l'accueil</button>
             </template>                   
         </modale>
         <!-- Card post -->    
         <div class="post" v-for="(post, idx) in posts" :key="idx">
             <div class="info">
-                <i class="fas fa-trash-alt" @click="toggleDelete(); getPostId(post.id)" v-if="post.userId === userId"></i>
-                <i class="fas fa-ellipsis-v" @click="toggleModify(); getPostId(post.id)" v-if="post.userId === userId"></i>
+                <i class="fas fa-trash-alt" @click="toggleDelete(); getPostData(post.id)" v-if="post.userId === userId"></i>
+                <i class="fas fa-ellipsis-v" @click="toggleModify(); getPostData(post.id, post.title, post.image)" v-if="post.userId === userId"></i>
             </div>
             <div class="title">
                 <p>{{ post.title }}</p>
@@ -78,7 +76,9 @@
                 likes: 0,
                 reveleModify: false,
                 reveleDelete: false,
-                postId: null
+                postId: null,
+                postTitle: "",
+                postImg: ""
             }
         },
         components: {
@@ -96,8 +96,10 @@
             toggleDelete() {
                 this.reveleDelete = !this.reveleDelete;
             },
-            getPostId(e) {
+            getPostData(e, f, g) {
                 this.postId = e;
+                this.postTitle = f;
+                this.postImg = g;
             },
             deletePost() {
                 let token = localStorage.getItem('token');
@@ -111,6 +113,37 @@
                     .then((res) => {
                         console.log(res.data);
                         this.toggleDelete();
+                        this.getPosts();
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    })
+            },
+            onFileChange(e) {
+                const file = e.target.files[0];
+                this.postImg = URL.createObjectURL(file);
+            },
+            updatePost() {
+                const formData = new FormData();
+                const imageFile = document.querySelector('#imgFile');
+                const id = this.postId;
+                if(imageFile.files[0]) {
+                    formData.append("image", imageFile.files[0]);
+                } else {
+                    formData.append("image", this.postImg);
+                }
+                formData.append("title", this.postTitle);
+                const token = localStorage.getItem("token");
+                axios
+                    .put(`http://localhost:8080/api/posts/${id}`, formData, {
+                        headers: {
+                            "Content-type": 'multipart/form-data',
+                            "Authorization": `Bearer ${token}`
+                        }
+                    })
+                    .then((res) => {
+                        console.log(res);
+                        this.toggleModify();
                         this.getPosts();
                     })
                     .catch((err) => {

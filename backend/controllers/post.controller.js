@@ -41,7 +41,7 @@ module.exports.getAllPosts = (req, res) => {
 
 //Mettre à jour un post
 module.exports.updatePost = (req, res) => {
-    const object = req.files ? 
+    const object = req.file ? 
         {
             title: req.body.title,
             image: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
