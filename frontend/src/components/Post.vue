@@ -27,7 +27,7 @@
                             <label for="customFile" class="custom-file-label">Choisir un fichier</label>
                         </div>
                         <div id="preview">
-                            <img :src="postImg" v-if="postImg">
+                            <img :src="postImg" v-if="postImg" :alt="postTitle">
                         </div>
                     </div>
                 </form>
@@ -41,19 +41,23 @@
         <!-- Card post -->    
         <div class="post" v-for="(post, idx) in posts" :key="idx">
             <div class="info">
-                <i class="fas fa-trash-alt" @click="toggleDelete(); getPostData(post.id)" v-if="post.userId === userId"></i>
-                <i class="fas fa-ellipsis-v" @click="toggleModify(); getPostData(post.id, post.title, post.image)" v-if="post.userId === userId"></i>
+                <button class="modalebtn">
+                    <i class="fas fa-trash-alt" @click="toggleDelete(); getPostData(post.id); getLikesCountForPost(post.id)" v-if="post.userId === userId || isAdmin"></i>
+                </button>
+                <button class="modalebtn">
+                    <i class="fas fa-ellipsis-v" @click="toggleModify(); getPostData(post.id, post.title, post.image)" v-if="post.userId === userId || isAdmin"></i>
+                </button>
             </div>
             <div class="title">
                 <p>{{ post.title }}</p>
             </div>
             <div class="image">
-                <img :src="post.image" alt="Image du post">
+                <img :src="post.image" :alt="post.title">
             </div>
             <div class="icons">
                 <div class="likes">
-                    <i class="far fa-heart"></i>
-                    <p>{{ likes }}</p>
+                    <i class="far fa-heart" @click="getPostData(post.id); addLike()"></i>
+                    <p>Compteur de likes : </p>
                 </div>
                 <div><i class="fas fa-share-alt"></i></div>
             </div>
@@ -73,12 +77,12 @@
         name: "Post",
         data(){
             return {
-                likes: 0,
                 reveleModify: false,
                 reveleDelete: false,
                 postId: null,
                 postTitle: "",
-                postImg: ""
+                postImg: "",
+                isAdmin: JSON.parse(localStorage.getItem('isAdmin'))
             }
         },
         components: {
@@ -149,6 +153,22 @@
                     .catch((err) => {
                         console.log(err);
                     })
+            },
+            addLike() {
+                const id = this.postId;
+                const token = localStorage.getItem('token');
+                axios
+                    .post(`http://localhost:8080/api/likes/${id}`,"", {
+                        headers: {
+                            "Authorization": `Bearer ${token}`
+                        }    
+                    })
+                    .then((res) => {
+                        console.log(res.data.message);
+                    })
+                    .catch((err) => {
+                        console.log(err);
+                    })
             }
         }
     }
@@ -165,7 +185,7 @@
         margin-bottom: 60px;
         height: 600px;
         width: 80%;
-        min-width: 450px;
+        min-width: 300px;
         max-width: 850px;
         border: 1px solid black;
         background-color: white;
@@ -177,11 +197,17 @@
             height: 10%;
             width: 100%;
             padding-left: 20px;
+            .modalebtn{
+                border: none;
+                background: white;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-right: 10px;
+            }
             i{
-                padding-right: 20px;
                 font-size: 1.3rem;
                 color: #fd2d01;
-                cursor: pointer;
             }
         }
         .title{
@@ -190,6 +216,7 @@
             justify-content: center;
             p{
                 font-weight: bold;
+                margin: 0;
             }
         }
         .image{
@@ -228,5 +255,18 @@
             }
         }
     }
+
+    @media screen and (max-width: 600px){
+        .post {
+            height: 400px;
+            min-width: 95%;
+            .info {
+                i {
+                    font-size: 1.1rem;
+                }
+            }
+        }
+    }
+
 
 </style>

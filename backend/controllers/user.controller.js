@@ -32,7 +32,8 @@ exports.getUser = (req, res) => {
         if (data) {
           console.log(data);
           res.status(200).send({
-              id: data.id
+              id: data.id,
+              isAdmin: data.isAdmin
           });
         } else {
           res.status(404).send({

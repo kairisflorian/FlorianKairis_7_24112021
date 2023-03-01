@@ -86,7 +86,9 @@
 <style lang="scss" scoped>
 
     #home{
-    background-image: url('../assets/coolbackground.png');
+        background-image: url('../assets/coolbackground.png');
     }
+
+
 
 </style>

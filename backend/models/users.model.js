@@ -15,6 +15,10 @@ module.exports = (sequelize, Sequelize) => {
             type: Sequelize.DataTypes.STRING,
             allowNull: false,
             notEmpty: true
+        },
+        isAdmin: {
+            type: Sequelize.DataTypes.BOOLEAN,
+            defaultValue: false
         }
     });
     return Users;

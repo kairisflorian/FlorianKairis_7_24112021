@@ -11,4 +11,5 @@ module.exports = function(app) {
     });
     app.post("/api/likes/:id", [authJwt.verifyToken], controller.addOrRemoveLike);
     app.get("/api/likes/:id", [authJwt.verifyToken], controller.getLikes);
+    app.get("/api/likes", [authJwt.verifyToken], controller.getAllLikes);
 };

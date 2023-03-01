@@ -49,7 +49,7 @@ module.exports.updatePost = (req, res) => {
         {
             title: req.body.title
         };
-    Post.update(object, { where: { id: req.params.id, userId: req.auth.id } })
+    Post.update(object, { where: { id: req.params.id } })
         .then((data) => {
             console.log(data);
             res.status(200).send({
@@ -66,7 +66,7 @@ module.exports.updatePost = (req, res) => {
 
 //Supprimer un post 
 module.exports.deletePost = (req, res) => {
-    Post.destroy({ where: { id: req.params.id, userId: req.auth.id } })
+    Post.destroy({ where: { id: req.params.id } })
         .then((data) => {
             console.log(data);
             res.status(200).send({

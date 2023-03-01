@@ -47,11 +47,24 @@ module.exports.addOrRemoveLike = (req, res) => {
 module.exports.getLikes = (req, res) => {
     Like.findAndCountAll({ where:{ postId: req.params.id } })
         .then((data) => {
-            res.status(200).send(data)
+            res.status(200).send({ count: data.count, postId: req.params.id })
         })
         .catch(() => {
             res.status(500).send({
                 message: "Impossible de compter le nombre de likes d'un post"
+            })
+        })
+}
+
+// Récupérer likes de tous les posts
+module.exports.getAllLikes = (req, res) => {
+    Like.findAndCountAll()
+        .then((data) => {
+            res.status(200).send(data)
+        })
+        .catch(() => {
+            res.status(500).send({
+                message: "Impossible de compter le nombre de likes des posts"
             })
         })
 }

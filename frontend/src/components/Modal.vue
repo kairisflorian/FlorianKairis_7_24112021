@@ -2,7 +2,7 @@
 
     <div class="bloc-modale">
         <div class="overlay" @click="toggleModals"></div>
-        <div class="modale card">
+        <div class="modale">
             <div class="header">
                 <div class="btn-modale btn btn-danger" @click="toggleModals">X</div>
             </div>
@@ -69,9 +69,10 @@
         background: #f1f1f1;
         color: #333;
         padding: 40px;
-        position: fixed;
-        top: 10%;
         max-width: 900px;
+        position: fixed;
+        max-height: 90vh;
+        overflow: scroll;        
         .content {
             margin-top: 20px;
             .titreForm{
@@ -84,7 +85,7 @@
                 align-items: center;
                 justify-content: space-evenly;
                 width: 100%;
-                height: 300px;
+                height: 400px;
                 border: 1px solid #fd2d01;
                 border-radius: 26px 26px 26px 26px / 23px 23px 23px 23px;
                 margin-top: 50px;
@@ -110,8 +111,10 @@
             }
         }
         .buttons {
-            margin-top: 15px;
+            margin-top: 5px;
             display: flex;
+            align-items: center;
+            justify-content: space-around;
             button {
                 width: 40%;
             }

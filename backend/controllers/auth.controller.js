@@ -14,7 +14,8 @@ exports.signup = (req, res) => {
   Users.create({
     email: req.body.email,
     // hachage du mdp
-    password: bcrypt.hashSync(req.body.password, 8)
+    password: bcrypt.hashSync(req.body.password, 8),
+    isAdmin: req.body.isAdmin
   })
     .then(users => {
       if (req.body.roles) {
@@ -69,11 +70,13 @@ exports.signin = (req, res) => {
       // création de la variable token
       var token = jwt.sign({
          id: users.id, 
-         email: users.email
+         email: users.email,
+         isAdmin: users.isAdmin
         }, 
         config.secret, 
         { expiresIn: 86400 });
       var authorities = [];
+      var isAdmin = users.isAdmin;
       // Récupération du rôle (getRoles) 
       users.getRoles().then((roles) => {
         for (let i = 0; i < roles.length; i++) {
@@ -82,7 +85,8 @@ exports.signin = (req, res) => {
         // La réponse envoyée : id, username, email, role et le token d'accès
         res.status(200).send({
           roles: authorities,
-          accessToken: token
+          accessToken: token,
+          isAdmin: isAdmin
         });
       });
     })

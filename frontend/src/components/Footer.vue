@@ -1,9 +1,9 @@
 <template>
+
     <footer>
         <div class="container">
             <div class="row">
                 <div class="col text-center">
-                    <!-- <h2 class="text-white text-capitalize font-weight-light p-3">Groupomania</h2> -->
                     <img class="img-fluid my-4" src="../assets/icon-min-black.png" alt="logo groupomania" />
                     <h3 class="text-dark font-weight-light font-italic mb-3">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -19,7 +19,9 @@
             </div>
         </div>
     </footer>
+    
 </template>
+
 
 <script>
 
@@ -31,6 +33,7 @@
 
 
 <style lang="scss" scoped>
+
     footer{
         background: #ffd7d7;
         min-height: 230px;
@@ -39,5 +42,14 @@
             width: 20%;
         }
     }
+
+    @media screen and (max-width: 1000px){
+        footer{
+            img{
+                width: 40%;
+            }
+        }
+    }
+
 </style>
 
